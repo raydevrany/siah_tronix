@@ -72,13 +72,13 @@
     <form id="auth-form" onsubmit="handleAuth(event)" novalidate>
       <div id="auth-name-fields" style="display:none;">
         <div class="form-row form-row-2">
-          <div class="form-group"><label for="auth-fn">First Name *</label><input class="form-input" id="auth-fn" placeholder="John" onblur="validateAuthField(this)" /></div>
-          <div class="form-group"><label for="auth-ln">Last Name *</label><input class="form-input" id="auth-ln" placeholder="Doe" onblur="validateAuthField(this)" /></div>
+          <div class="form-group"><label for="auth-fn">First Name *</label><input class="form-input" id="auth-fn" placeholder="" onblur="validateAuthField(this)" /></div>
+          <div class="form-group"><label for="auth-ln">Last Name *</label><input class="form-input" id="auth-ln" placeholder="" onblur="validateAuthField(this)" /></div>
         </div>
       </div>
-      <div class="form-group"><label for="auth-email">Email *</label><input class="form-input" id="auth-email" type="email" placeholder="you@example.com" onblur="validateAuthField(this)" /></div>
-      <div class="form-group"><label for="auth-pass">Password *</label><input class="form-input" id="auth-pass" type="password" placeholder="••••••••" onblur="validateAuthField(this)" /></div>
-      <div class="form-group" id="auth-confirm-group" style="display:none;"><label for="auth-confirm">Confirm Password *</label><input class="form-input" id="auth-confirm" type="password" placeholder="••••••••" onblur="validateAuthField(this)" /></div>
+      <div class="form-group"><label for="auth-email">Email *</label><input class="form-input" id="auth-email" type="email" placeholder="" onblur="validateAuthField(this)" /></div>
+      <div class="form-group"><label for="auth-pass">Password *</label><input class="form-input" id="auth-pass" type="password" placeholder="" onblur="validateAuthField(this)" /></div>
+      <div class="form-group" id="auth-confirm-group" style="display:none;"><label for="auth-confirm">Confirm Password *</label><input class="form-input" id="auth-confirm" type="password" placeholder="" onblur="validateAuthField(this)" /></div>
       <button type="submit" class="btn btn-primary btn-lg" style="width:100%; margin-top:0.5rem;">Sign In</button>
     </form>
     <div style="text-align:center; margin-top:1rem; font-size:0.875rem; color:var(--muted-fg);" id="auth-switch">
@@ -381,7 +381,7 @@
               <div class="form-group">
                 <label for="pf-newpass">New Password</label>
                 <div class="input-wrapper">
-                  <input class="form-input" id="pf-newpass" type="password" placeholder="••••••••" oninput="validateProfileField(this)" onblur="validateProfileField(this)" />
+                  <input class="form-input" id="pf-newpass" type="password" placeholder="" oninput="validateProfileField(this)" onblur="validateProfileField(this)" />
                   <button type="button" class="password-toggle" onclick="toggleProfilePassword('pf-newpass', this)">
                     <i data-lucide="eye" style="width:16px;height:16px;"></i>
                   </button>
@@ -390,7 +390,7 @@
               <div class="form-group">
                 <label for="pf-confpass">Confirm Password</label>
                 <div class="input-wrapper">
-                  <input class="form-input" id="pf-confpass" type="password" placeholder="••••••••" oninput="validateProfileField(this)" onblur="validateProfileField(this)" />
+                  <input class="form-input" id="pf-confpass" type="password" placeholder="" oninput="validateProfileField(this)" onblur="validateProfileField(this)" />
                   <button type="button" class="password-toggle" onclick="toggleProfilePassword('pf-confpass', this)">
                     <i data-lucide="eye" style="width:16px;height:16px;"></i>
                   </button>
