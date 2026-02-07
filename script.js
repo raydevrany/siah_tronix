@@ -347,7 +347,7 @@ function handleAuth(e) {
   closeAuthModal();
   updateAuthUI();
  
-  showToast('Hi, ' + currentUser.firstName + '! Welcome to ElectroShop 🎉', 'success', 5000);
+  showToast('Hi, ' + currentUser.firstName + '! Welcome Siah Tronix', 'success', 5000);
 
   ['auth-fn','auth-ln','auth-email','auth-pass','auth-confirm'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
 }
