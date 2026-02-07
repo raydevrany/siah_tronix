@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home | Siah Tronix</title>
+  <meta name="description" content="Discover premium electronics at unbeatable prices. Shop smartphones, laptops, audio gear and more." />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container">
+    <a href="#" class="navbar-logo" onclick="navigate('home'); return false;">
+      <i data-lucide="zap"></i>
+      <span>Siah Tronix</span>
+    </a>
+
+
+    <nav class="navbar-nav desktop-nav" id="desktop-nav"></nav>
+    <div class="navbar-actions desktop-actions">
+      <button class="cart-btn" onclick="openCart()">
+        <i data-lucide="shopping-cart"></i>
+        <span class="cart-badge" id="cart-badge-desktop" style="display:none;">0</span>
+      </button>
+      <div id="auth-desktop"></div>
+    </div>
+    <div class="navbar-actions mobile-actions">
+      <button class="cart-btn" onclick="openCart()">
+        <i data-lucide="shopping-cart"></i>
+        <span class="cart-badge" id="cart-badge-mobile" style="display:none;">0</span>
+      </button>
+      <button class="cart-btn" onclick="toggleMobileMenu()">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+
+<div class="drawer-overlay" id="mobile-overlay" onclick="toggleMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <nav id="mobile-nav-links"></nav>
+  <div style="margin-top:2rem;" id="auth-mobile"></div>
+</div>
+
+
+<div class="drawer-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-header">
+    <h2>
+      <i data-lucide="shopping-bag"></i>
+      Cart (<span id="cart-count">0</span>)
+    </h2>
+    <button class="btn btn-ghost btn-icon-sm" onclick="closeCart()">
+      <i data-lucide="x"></i>
+    </button>
+  </div>
+  <div id="cart-content"></div>
+</div>
+
+
+<div class="modal-overlay" id="auth-overlay" onclick="closeAuthModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeAuthModal()">
+      <i data-lucide="x"></i>
+    </button>
+    <h2 id="auth-title">Welcome Back</h2>
+    <p class="desc" id="auth-desc">Sign in to your account to proceed to checkout</p>
+    <form id="auth-form" onsubmit="handleAuth(event)" novalidate>
+      <div id="auth-name-fields" style="display:none;">
+        <div class="form-row form-row-2">
+          <div class="form-group"><label for="auth-fn">First Name *</label><input class="form-input" id="auth-fn" placeholder="John" onblur="validateAuthField(this)" /></div>
+          <div class="form-group"><label for="auth-ln">Last Name *</label><input class="form-input" id="auth-ln" placeholder="Doe" onblur="validateAuthField(this)" /></div>
+        </div>
+      </div>
+      <div class="form-group"><label for="auth-email">Email *</label><input class="form-input" id="auth-email" type="email" placeholder="you@example.com" onblur="validateAuthField(this)" /></div>
+      <div class="form-group"><label for="auth-pass">Password *</label><input class="form-input" id="auth-pass" type="password" placeholder="••••••••" onblur="validateAuthField(this)" /></div>
+      <div class="form-group" id="auth-confirm-group" style="display:none;"><label for="auth-confirm">Confirm Password *</label><input class="form-input" id="auth-confirm" type="password" placeholder="••••••••" onblur="validateAuthField(this)" /></div>
+      <button type="submit" class="btn btn-primary btn-lg" style="width:100%; margin-top:0.5rem;">Sign In</button>
+    </form>
+    <div style="text-align:center; margin-top:1rem; font-size:0.875rem; color:var(--muted-fg);" id="auth-switch">
+      Don't have an account? <button style="background:none;border:none;color:var(--primary);font-weight:500;cursor:pointer;" onclick="switchAuthMode()">Sign up</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="preview-overlay" onclick="closePreview()">
+  <div class="modal preview-modal" onclick="event.stopPropagation()">
+    <div class="preview-grid">
+      <div class="preview-image">
+        <img id="preview-img" src="" alt="" />
+        <span class="badge badge-default" id="preview-badge" style="position:absolute;top:12px;left:12px;display:none;"></span>
+      </div>
+      <div class="preview-details">
+        <div>
+          <p style="font-size:0.75rem;font-weight:500;color:var(--muted-fg);text-transform:uppercase;letter-spacing:0.05em;" id="preview-category"></p>
+          <h2 style="font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin:0.25rem 0 0.5rem;" id="preview-name"></h2>
+          <p style="font-size:0.875rem;color:var(--muted-fg);line-height:1.7;margin-bottom:1rem;" id="preview-desc"></p>
+          <div class="preview-specs" id="preview-specs"></div>
+        </div>
+        <div class="preview-footer">
+          <div class="preview-price-row">
+            <span class="preview-price" id="preview-price"></span>
+            <span class="badge badge-stock">In Stock</span>
+          </div>
+          <button class="btn btn-primary btn-lg" style="width:100%;" onclick="addToCartFromPreview()">
+            <i data-lucide="shopping-cart" style="width:16px;height:16px;"></i>
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="admin-modal-overlay" onclick="closeAdminModal()">
+  <div class="modal" id="admin-modal" onclick="event.stopPropagation()"></div>
+</div>
+
+
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-bg">
+      <img id="hero-img-0" src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=1920&q=80" alt="Electronics" />
+      <img id="hero-img-1" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&q=80" alt="Tech" class="hidden" />
+      <img id="hero-img-2" src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=1920&q=80" alt="Gadgets" class="hidden" />
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge"><span class="dot"></span> New Arrivals 2024</div>
+        <h1>Premium Electronics, <span>Delivered</span></h1>
+        <p class="hero-desc">Discover the latest tech from top brands at unbeatable prices. Free delivery on orders over TZS 250,000.</p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary btn-lg hero-shop-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+            Shop Now
+            <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+          </button>
+        </div>
+        <div class="hero-features">
+          <div class="hero-feature">
+            <div class="hero-feature-icon"><i data-lucide="truck"></i></div>
+            <span class="hero-feature-label">Free Delivery</span>
+            <span class="hero-feature-detail">Orders TZS 250K+</span>
+          </div>
+          <div class="hero-feature">
+            <div class="hero-feature-icon"><i data-lucide="shield"></i></div>
+            <span class="hero-feature-label">1 Year Warranty</span>
+            <span class="hero-feature-detail">Full coverage</span>
+          </div>
+          <div class="hero-feature">
+            <div class="hero-feature-icon"><i data-lucide="headphones"></i></div>
+            <span class="hero-feature-label">24/7 Support</span>
+            <span class="hero-feature-detail">Always here</span>
+          </div>
+        </div>
+        <div class="hero-dots" id="hero-dots">
+          <div class="hero-dot active"></div>
+          <div class="hero-dot"></div>
+          <div class="hero-dot"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="products" class="products-section">
+    <div class="container">
+      <h2 class="font-display">Our Products</h2>
+      <div class="products-toolbar">
+        <div class="category-filter scrollbar-hide" id="category-filter"></div>
+        <div class="search-wrapper">
+          <i data-lucide="search" style="width:16px;height:16px;"></i>
+          <input class="search-input" placeholder="Search products..." id="search-input" oninput="filterProducts()" />
+        </div>
+      </div>
+      <div class="product-grid" id="product-grid"></div>
+      <div class="empty-state" id="no-products" style="display:none;"><p>No products found matching your criteria.</p></div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div><h3>ElectroShop</h3><p>Premium electronics at unbeatable prices. Your trusted tech destination since 2020.</p></div>
+        <div><h4>Shop</h4><div class="footer-links"><span>Smartphones</span><span>Laptops</span><span>Audio</span><span>Wearables</span></div></div>
+        <div><h4>Support</h4><div class="footer-links"><span onclick="navigate('support')">Contact Us</span><span>FAQ</span><span>Shipping</span><span>Returns</span></div></div>
+        <div><h4>Company</h4><div class="footer-links"><span onclick="navigate('about')">About</span><span>Blog</span><span>Careers</span><span>Press</span></div></div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2024 ElectroShop. All rights reserved.</p></div>
+    </div>
+  </footer>
+</div>
+
+
+<div class="page" id="page-about">
+  <div class="page-content">
+    <div class="container">
+      <div class="page-center">
+        <div class="page-icon"><div class="page-icon-box"><i data-lucide="zap" style="width:32px;height:32px;"></i></div></div>
+        <h1>About ElectroShop</h1>
+        <p class="lead">Founded in 2020, ElectroShop is your trusted destination for premium electronics at unbeatable prices. We curate the latest tech from top brands so you can find exactly what you need — fast.</p>
+        <div class="stats-grid">
+          <div><div class="stat-value">10K+</div><div class="stat-label">Happy Customers</div></div>
+          <div><div class="stat-value">500+</div><div class="stat-label">Products</div></div>
+          <div><div class="stat-value">24/7</div><div class="stat-label">Support</div></div>
+        </div>
+        <p style="color:var(--muted-fg);line-height:1.7;">Our mission is simple: make great technology accessible to everyone. Every product in our catalog is hand-picked for quality, performance, and value.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="page" id="page-support">
+  <div class="page-content">
+    <div class="container">
+      <div class="page-center" style="text-align:center;">
+        <h1>Get in Touch</h1>
+        <p class="lead">Have a question or need help? Reach out through any of the channels below.</p>
+      </div>
+      <div style="max-width:42rem;margin:0 auto;">
+        <div class="contact-card">
+          <div class="contact-icon"><i data-lucide="mail"></i></div>
+          <div><h2>Email Us</h2><p class="detail">support@electroshop.com</p><p class="sub">We typically respond within 24 hours</p></div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon"><i data-lucide="map-pin"></i></div>
+          <div><h2>Visit Us</h2><p class="detail">123 Tech Avenue, Silicon Valley, CA 94025</p><p class="sub">Mon–Fri, 9 AM – 6 PM PST</p></div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon"><i data-lucide="phone"></i></div>
+          <div><h2>Call Us</h2><p class="detail">+1 (800) 555-0199</p><p class="sub">Available Mon–Sat, 8 AM – 8 PM PST</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="page" id="page-checkout">
+  <header class="checkout-header">
+    <div class="container">
+      <button class="btn btn-ghost btn-icon-sm" onclick="navigate('home')">
+        <i data-lucide="arrow-left"></i>
+      </button>
+      <h1 class="font-display">Checkout</h1>
+      <div class="secure">
+        <i data-lucide="lock" style="width:16px;height:16px;"></i>
+        Secure Checkout
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <form onsubmit="handleCheckout(event)" novalidate>
+      <div class="checkout-grid">
+        <div>
+          <div class="checkout-section">
+            <h2>Contact Information</h2>
+            <div class="form-row form-row-2">
+              <div class="form-group"><label for="co-fn">First Name *</label><input class="form-input" id="co-fn" required oninput="liveValidateCheckout(this)" onblur="validateCheckoutField(this)" /></div>
+              <div class="form-group"><label for="co-ln">Last Name *</label><input class="form-input" id="co-ln" required oninput="liveValidateCheckout(this)" onblur="validateCheckoutField(this)" /></div>
+            </div>
+            <div class="form-row form-row-2">
+              <div class="form-group"><label for="co-email">Email *</label><input class="form-input" id="co-email" type="email" required oninput="liveValidateCheckout(this)" onblur="validateCheckoutField(this)" /></div>
+              <div class="form-group"><label for="co-phone">Phone</label><input class="form-input" id="co-phone" type="tel" oninput="liveValidateCheckout(this)" onblur="validateCheckoutField(this)" /></div>
+            </div>
+          </div>
+          <div class="checkout-section" style="margin-top:2rem;">
+            <h2>Shipping Address</h2>
+            <div class="form-group"><label for="co-addr">Address *</label><input class="form-input" id="co-addr" required oninput="liveValidateCheckout(this)" onblur="validateCheckoutField(this)" /></div>
+            <div class="form-row form-row-3">
+              <div class="form-group"><label for="co-city">City *</label><input class="form-input" id="co-city" required oninput="liveValidateCheckout(this)" onblur="validateCheckoutField(this)" /></div>
+              <div class="form-group"><label for="co-region">Region *</label><input class="form-input" id="co-region" required oninput="liveValidateCheckout(this)" onblur="validateCheckoutField(this)" /></div>
+              <div class="form-group"><label for="co-zip">ZIP Code *</label><input class="form-input" id="co-zip" required oninput="liveValidateCheckout(this)" onblur="validateCheckoutField(this)" /></div>
+            </div>
+          </div>
+          <div class="checkout-section" style="margin-top:2rem;">
+            <h2>
+              <i data-lucide="wallet" style="width:20px;height:20px;"></i>
+              Payment Method
+            </h2>
+            <div class="payment-methods">
+              <button type="button" class="payment-method active" data-method="mobile" onclick="selectPayment('mobile')">
+                <i data-lucide="smartphone" style="width:24px;height:24px;"></i>
+                <span class="pm-label">Mobile Money</span>
+                <span class="pm-desc">Pay via mobile wallet</span>
+              </button>
+              <button type="button" class="payment-method" data-method="card" onclick="selectPayment('card')">
+                <i data-lucide="credit-card" style="width:24px;height:24px;"></i>
+                <span class="pm-label">Card</span>
+                <span class="pm-desc">Credit or debit card</span>
+              </button>
+              <button type="button" class="payment-method" data-method="cash" onclick="selectPayment('cash')">
+                <i data-lucide="banknote" style="width:24px;height:24px;"></i>
+                <span class="pm-label">Cash on Delivery</span>
+                <span class="pm-desc">Pay when you receive</span>
+              </button>
+            </div>
+            <div id="payment-details"></div>
+          </div>
+        </div>
+        <div>
+          <div class="order-summary" id="checkout-summary"></div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="page" id="page-confirmation">
+  <div class="confirmation">
+    <div class="confirmation-box">
+      <div class="confirmation-icon"><i data-lucide="check-circle" style="width:80px;height:80px;color:#46c25c;"></i></div>
+      <h1>Order Confirmed!</h1>
+      <p class="subtitle">Thank you for your purchase. Your order has been placed successfully.</p>
+      <div class="confirmation-details">
+        <div class="confirmation-row"><span class="label">Order Number</span><span class="value" id="conf-order">ORD-DEMO</span></div>
+        <div class="confirmation-row"><span class="label">Total Paid</span><span class="value" id="conf-total">TZS 0</span></div>
+        <div class="confirmation-row"><span class="label">Estimated Delivery</span><span class="value">3–5 Business Days</span></div>
+      </div>
+      <div class="confirmation-shipping">
+        <i data-lucide="package" style="width:32px;height:32px;color:var(--primary);flex-shrink:0;"></i>
+        <p>You'll receive a confirmation email with tracking details once your order ships.</p>
+      </div>
+      <button class="btn btn-primary btn-lg" style="width:100%;" onclick="navigate('home')">
+        Continue Shopping
+        <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<div class="page" id="page-profile">
+  <div class="profile-page">
+    <div class="container">
+      <div class="profile-center">
+        <div class="profile-header">
+          <div class="page-icon"><div class="page-icon-box"><i data-lucide="user" style="width:32px;height:32px;"></i></div></div>
+          <h1 style="font-family:var(--font-display);font-size:2.25rem;font-weight:700;margin-bottom:0.5rem;">My Profile</h1>
+          <p style="font-size:1.125rem;color:var(--muted-fg);">Manage your account details</p>
+        </div>
+        <div class="profile-card">
+          <div class="profile-card-header">
+            <h2><i data-lucide="user" style="width:20px;height:20px;color:var(--primary);"></i> Personal Information</h2>
+            <p>Update your name and email address</p>
+          </div>
+          <div class="profile-card-body">
+            <div class="form-row form-row-2">
+              <div class="form-group"><label for="pf-fn">First Name</label><input class="form-input" id="pf-fn" placeholder="John" oninput="validateProfileField(this)" onblur="validateProfileField(this)" /></div>
+              <div class="form-group"><label for="pf-ln">Last Name</label><input class="form-input" id="pf-ln" placeholder="Doe" oninput="validateProfileField(this)" onblur="validateProfileField(this)" /></div>
+            </div>
+            <div class="form-group">
+              <label for="pf-email">Email Address</label>
+              <input class="form-input" id="pf-email" type="email" placeholder="" oninput="validateProfileField(this)" onblur="validateProfileField(this)" />
+            </div>
+          </div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-card-header">
+            <h2><i data-lucide="lock" style="width:20px;height:20px;color:var(--primary);"></i> Change Password</h2>
+            <p>Leave blank to keep your current password</p>
+          </div>
+          <div class="profile-card-body">
+            <div class="form-group">
+              <label for="pf-curpass">Current Password</label>
+              <div class="input-wrapper">
+                <input class="form-input" id="pf-curpass" type="password" placeholder="••••••••" oninput="validateProfileField(this)" onblur="validateProfileField(this)" />
+                <button type="button" class="password-toggle" onclick="toggleProfilePassword('pf-curpass', this)">
+                  <i data-lucide="eye" style="width:16px;height:16px;"></i>
+                </button>
+              </div>
+            </div>
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label for="pf-newpass">New Password</label>
+                <div class="input-wrapper">
+                  <input class="form-input" id="pf-newpass" type="password" placeholder="••••••••" oninput="validateProfileField(this)" onblur="validateProfileField(this)" />
+                  <button type="button" class="password-toggle" onclick="toggleProfilePassword('pf-newpass', this)">
+                    <i data-lucide="eye" style="width:16px;height:16px;"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="pf-confpass">Confirm Password</label>
+                <div class="input-wrapper">
+                  <input class="form-input" id="pf-confpass" type="password" placeholder="••••••••" oninput="validateProfileField(this)" onblur="validateProfileField(this)" />
+                  <button type="button" class="password-toggle" onclick="toggleProfilePassword('pf-confpass', this)">
+                    <i data-lucide="eye" style="width:16px;height:16px;"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="profile-card" id="profile-theme-card"></div>
+        <div class="profile-save">
+          <button class="btn btn-primary btn-lg" onclick="saveProfile()">
+            <i data-lucide="save" style="width:16px;height:16px;"></i>
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="page" id="page-orders">
+  <div class="orders-page">
+    <div class="container">
+      <div class="orders-center">
+        <div class="profile-header">
+          <div class="page-icon"><div class="page-icon-box"><i data-lucide="package" style="width:32px;height:32px;"></i></div></div>
+          <h1 style="font-family:var(--font-display);font-size:2.25rem;font-weight:700;margin-bottom:0.5rem;">My Orders</h1>
+          <p style="font-size:1.125rem;color:var(--muted-fg);">Track and review your order history</p>
+        </div>
+        <div id="orders-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="page" id="page-admin">
+  <header class="admin-header">
+    <div class="container">
+      <button class="logo" onclick="navigate('home')">
+        <i data-lucide="zap"></i>
+        <span class="admin-tab-text">Admin Panel</span>
+      </button>
+      <nav class="admin-tabs">
+        <button class="admin-tab active" data-tab="dashboard" onclick="setAdminTab('dashboard')">
+          <i data-lucide="layout-dashboard"></i>
+          <span class="admin-tab-text">Dashboard</span>
+        </button>
+        <button class="admin-tab" data-tab="orders" onclick="setAdminTab('orders')">
+          <i data-lucide="shopping-cart"></i>
+          <span class="admin-tab-text">Orders</span>
+        </button>
+        <button class="admin-tab" data-tab="categories" onclick="setAdminTab('categories')">
+          <i data-lucide="folder-tree"></i>
+          <span class="admin-tab-text">Categories</span>
+        </button>
+        <button class="admin-tab" data-tab="products" onclick="setAdminTab('products')">
+          <i data-lucide="package"></i>
+          <span class="admin-tab-text">Products</span>
+        </button>
+        <button class="admin-tab" data-tab="users" onclick="setAdminTab('users')">
+          <i data-lucide="users"></i>
+          <span class="admin-tab-text">Users</span>
+        </button>
+        <button class="admin-tab" data-tab="profile" onclick="setAdminTab('profile')">
+          <i data-lucide="user-circle"></i>
+          <span class="admin-tab-text">Profile</span>
+        </button>
+        <button class="admin-tab" onclick="navigate('home')">
+          <i data-lucide="globe"></i>
+          <span class="admin-tab-text">View Website</span>
+        </button>
+        <button class="admin-tab" style="color:var(--destructive);" onclick="logout()">
+          <i data-lucide="log-out"></i>
+          <span class="admin-tab-text">Logout</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+  <div class="admin-main" id="admin-main"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
